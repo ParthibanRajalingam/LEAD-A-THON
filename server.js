@@ -8,7 +8,7 @@ const { JSDOM } = jsdom;
 var Cache = require('ttl-cache'),
 cache = new Cache();
 const chessEcoUrl= 'https://www.chessgames.com/chessecohelp.html';
-const port = 8080
+const port = process.env.PORT || 3000;
 app.use(cors())
 
 //Method to load the chess opening moved by reading HTML.
