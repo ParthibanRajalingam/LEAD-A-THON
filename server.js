@@ -103,6 +103,30 @@ app.get('/:code', (req, res) => {
 	}).catch(err => res.send(err));
 })
 
+//code and get next move
+app.get('/:code/*', (req, res) => {
+	let code = req.params.code;
+	let moves = req.params['0'] ? req.params['0'].split('/') : [];
+	if(moves && moves.length){
+			moves = moves.map( x => x.toUpperCase());
+			getOpeningByCode(code).then(data => {
+			let openingMoves = data.moves.split(' ').filter(i => /^[a-zA-Z]+\d+$/.test(i));
+			openingMoves = openingMoves.map( x => x.toUpperCase());
+			let currentMove = moves[moves.length -1];
+			let indexOfCurrentMove = openingMoves.indexOf(currentMove);
+			if(indexOfCurrentMove && openingMoves.length > indexOfCurrentMove ){
+				res.send(openingMoves[indexOfCurrentMove + 1]);
+			}
+			else{
+				res.send("Unable to get the next move");
+			}
+	}).catch(err => res.send(err));
+	}
+	else{
+		res.send("Nor a valid opening..");
+	}
+})
+
 //Cache will be loaded with opening moves while the aplication start
 app.listen(port, () => {
 	loadChessData.then((data) => {
